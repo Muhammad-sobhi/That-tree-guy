@@ -74,8 +74,7 @@ export default function About() {
           <div className={`relative transition-all duration-1000 ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"}`}>
             <div className="relative aspect-[4/5] overflow-hidden rounded-sm">
               <Image
-                src={getImageUrl(settings?.about_image_path) || "/images/team.jpg"}
-                alt="Our professional team"
+                src={settings?.about_image_path ? getImageUrl(settings.about_image_path) : "/images/team.jpg"}                alt="Our professional team"
                 fill
                 unoptimized
                 sizes="(max-width: 768px) 100vw, 50vw"
