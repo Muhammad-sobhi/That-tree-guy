@@ -27,6 +27,13 @@ const footerLinks = {
   ],
 }
 
+// Added Social Links configuration
+const socialLinks = [
+  { icon: Instagram, href: "#", label: "Instagram" },
+  { icon: Facebook, href: "#", label: "Facebook" },
+  { icon: Linkedin, href: "#", label: "LinkedIn" },
+]
+
 const serviceAreas = [
   "Toronto", "Oakville", "Mississauga", "Burlington", "Hamilton",
   "Vancouver", "Calgary", "Ottawa", "Montreal"
@@ -43,10 +50,6 @@ export function Footer() {
       setEmail("")
       setTimeout(() => setIsSubscribed(false), 3000)
     }
-  }
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" })
   }
 
   return (
@@ -96,6 +99,20 @@ export function Footer() {
             <p className="mt-4 text-sm text-background/70 leading-relaxed">
               Transforming Canadian outdoor spaces since 2010. Expert tree care and landscape design.
             </p>
+            
+            {/* SOCIAL MEDIA SECTION ADDED HERE */}
+            <div className="mt-6 flex gap-4">
+              {socialLinks.map((social) => (
+                <a 
+                  key={social.label}
+                  href={social.href}
+                  className="p-2 rounded-full border border-background/20 hover:bg-background/10 hover:border-background/40 transition-all"
+                  aria-label={social.label}
+                >
+                  <social.icon className="h-4 w-4 text-background/70 hover:text-background" />
+                </a>
+              ))}
+            </div>
           </div>
 
           {Object.entries(footerLinks).map(([title, links]) => (
@@ -135,16 +152,6 @@ export function Footer() {
               <a href="#" className="hover:text-background">Privacy Policy</a>
               <a href="#" className="hover:text-background">Terms</a>
             </div>
-            
-            {/* <button
-              onClick={scrollToTop}
-              className="flex items-center gap-2 text-xs text-background/50 hover:text-background transition-colors group"
-            >
-              Back to top
-              <span className="h-8 w-8 rounded-full border border-background/20 flex items-center justify-center">
-                <ArrowUp className="h-4 w-4 group-hover:-translate-y-0.5 transition-transform" />
-              </span>
-            </button> */}
           </div>
         </div>
       </div>
