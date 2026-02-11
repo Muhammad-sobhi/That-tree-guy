@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from "react"
-import { Leaf, Instagram, Facebook, Linkedin, ArrowUp } from "lucide-react"
+import { Leaf, Instagram, Facebook, Linkedin } from "lucide-react"
 
 const footerLinks = {
   services: [
@@ -27,21 +27,21 @@ const footerLinks = {
   ],
 }
 
-// Added Social Links configuration
-const socialLinks = [
-  { icon: Instagram, href: "#", label: "Instagram" },
-  { icon: Facebook, href: "#", label: "Facebook" },
-  { icon: Linkedin, href: "#", label: "LinkedIn" },
-]
-
 const serviceAreas = [
   "Toronto", "Oakville", "Mississauga", "Burlington", "Hamilton",
   "Vancouver", "Calgary", "Ottawa", "Montreal"
 ]
 
-export function Footer() {
+export function Footer({ settings = {} }) {
   const [email, setEmail] = useState("")
   const [isSubscribed, setIsSubscribed] = useState(false)
+
+  // This maps your database keys to the icons
+  const socialConfigs = [
+    { icon: Instagram, url: settings.social_instagram, label: "Instagram" },
+    { icon: Facebook, url: settings.social_facebook, label: "Facebook" },
+    { icon: Linkedin, url: settings.social_linkedin, label: "LinkedIn" },
+  ]
 
   const handleSubscribe = (e) => {
     e.preventDefault()
@@ -100,18 +100,25 @@ export function Footer() {
               Transforming Canadian outdoor spaces since 2010. Expert tree care and landscape design.
             </p>
             
-            {/* SOCIAL MEDIA SECTION ADDED HERE */}
+            {/* DYNAMIC SOCIAL MEDIA SECTION */}
             <div className="mt-6 flex gap-4">
-              {socialLinks.map((social) => (
-                <a 
-                  key={social.label}
-                  href={social.href}
-                  className="p-2 rounded-full border border-background/20 hover:bg-background/10 hover:border-background/40 transition-all"
-                  aria-label={social.label}
-                >
-                  <social.icon className="h-4 w-4 text-background/70 hover:text-background" />
-                </a>
-              ))}
+              {socialConfigs.map((social) => {
+                // If there is no URL in settings, don't render the icon
+                if (!social.url) return null;
+
+                return (
+                  <a 
+                    key={social.label}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2 rounded-full border border-background/20 hover:bg-background/10 hover:border-background/40 transition-all"
+                    aria-label={social.label}
+                  >
+                    <social.icon className="h-4 w-4 text-background/70 hover:text-background" />
+                  </a>
+                )
+              })}
             </div>
           </div>
 
@@ -156,7 +163,7 @@ export function Footer() {
         </div>
       </div>
 
-      {/* Large Decorative Text */}
+      {/* Decorative Text */}
       <div className="absolute bottom-0 left-0 right-0 overflow-hidden pointer-events-none select-none">
         <div className="font-serif text-[15vw] font-bold text-background/[0.02] whitespace-nowrap leading-none translate-y-1/3">
           THAT TREE GUY
