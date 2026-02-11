@@ -12,7 +12,7 @@ import { Footer } from "../src/components/footer"
 import { ScrollProgress } from "../src/components/scroll-progress"
 import { MarqueeText } from "../src/components/marquee-text"
 import Partners from "../src/components/Partners"
-import { fetchData } from "../src/lib/api"
+import { fetchData } from "../lib/api"
 
 export default function Home() {
   const [partners, setPartners] = useState([]);
