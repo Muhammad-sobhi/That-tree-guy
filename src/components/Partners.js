@@ -2,9 +2,9 @@
 import React from 'react';
 
 export default function Partners({ logos }) {
+  // If logos is empty, the section won't show at all
   if (!logos || logos.length === 0) return null;
 
-  // BASE_URL for images - adjust if needed
   const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL?.replace('/api', '') || '';
 
   return (
@@ -17,10 +17,11 @@ export default function Partners({ logos }) {
 
       <div className="relative flex overflow-x-hidden group">
         <div className="animate-marquee flex whitespace-nowrap items-center">
+          {/* We use logo.path because that is what your ContentManager saves */}
           {[...logos, ...logos, ...logos].map((logo, index) => (
             <div key={index} className="mx-12 flex-shrink-0">
               <img
-                src={logo.image_path.startsWith('http') ? logo.image_path : `${BASE_URL}/storage/${logo.image_path}`}
+                src={logo.path?.startsWith('http') ? logo.path : `${BASE_URL}/storage/${logo.path}`}
                 alt={logo.name || "Partner"}
                 className="h-10 w-auto grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-500"
               />
@@ -32,7 +33,7 @@ export default function Partners({ logos }) {
       <style jsx>{`
         @keyframes marquee {
           0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
+          100% { transform: translateX(-33.33%); }
         }
         .animate-marquee {
           display: flex;
