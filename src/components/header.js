@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react"
 import { Menu, X, ChevronDown } from "lucide-react"
 import Image from "next/image"
-import api from "../api/axios" // Ensure this path matches your axios instance
+// Import your existing fetchData helper
+import { fetchData } from "@/lib/api" // Adjust this path if your api.js is in /src/api or elsewhere
 
 const navLinks = [
   { href: "#about", label: "About" },
@@ -18,17 +19,16 @@ export function Header() {
   const [services, setServices] = useState([])
   const [dropdownOpen, setDropdownOpen] = useState(false)
 
-  // Fetch services from dashboard
+  // Fetch services using your existing helper
   useEffect(() => {
-    const fetchServices = async () => {
-      try {
-        const res = await api.get('/services')
-        setServices(res.data)
-      } catch (err) {
-        console.error("Failed to fetch services for menu", err)
+    const getServices = async () => {
+      // your helper already adds /api, so we just pass the endpoint
+      const data = await fetchData('/services'); 
+      if (data) {
+        setServices(data);
       }
     }
-    fetchServices()
+    getServices();
   }, [])
 
   useEffect(() => {
@@ -38,9 +38,6 @@ export function Header() {
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
-
-  // Function to create a URL-friendly ID from service title
-  const slugify = (text) => text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '')
 
   return (
     <header
@@ -52,7 +49,7 @@ export function Header() {
     >
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 lg:px-8">
         
-        {/* Logo Section */}
+        {/* Logo */}
         <a href="#" className="flex items-center gap-3 group">
           <div className="relative flex h-10 w-10 items-center justify-center rounded-full bg-primary transition-transform duration-300 group-hover:scale-110 overflow-hidden">
             <div className="relative h-full w-full p-2">
@@ -91,7 +88,7 @@ export function Header() {
               Services <ChevronDown size={14} className={`transition-transform duration-300 ${dropdownOpen ? 'rotate-180' : ''}`} />
             </button>
 
-            {/* Dropdown Menu */}
+            {/* Dropdown Menu - Matches your clean UI */}
             <div className={`absolute left-0 top-full pt-2 transition-all duration-300 ${
               dropdownOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-2 pointer-events-none"
             }`}>
@@ -99,7 +96,7 @@ export function Header() {
                 {services.length > 0 ? services.map((service) => (
                   <a
                     key={service.id}
-                    href={`#service-${service.id}`} // Or #service-title depending on your section IDs
+                    href={`#service-${service.id}`}
                     className="block px-4 py-3 text-sm text-gray-700 hover:bg-green-50 hover:text-primary rounded-xl transition-colors font-medium"
                     onClick={() => setDropdownOpen(false)}
                   >
@@ -110,7 +107,7 @@ export function Header() {
                 )}
                 <div className="border-t border-gray-50 mt-1 pt-1">
                   <a href="#services" className="block px-4 py-3 text-xs font-bold uppercase tracking-widest text-primary hover:bg-green-50 rounded-xl">
-                    View All Services
+                    View All
                   </a>
                 </div>
               </div>
@@ -143,7 +140,6 @@ export function Header() {
           type="button"
           className={`lg:hidden rounded-sm p-2 ${isScrolled ? "text-foreground" : "text-white"}`}
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          aria-label="Toggle menu"
         >
           {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
@@ -157,12 +153,12 @@ export function Header() {
       >
         <div className="px-6 py-6 space-y-4 border-t border-border overflow-y-auto">
           <p className="text-[10px] font-black uppercase text-gray-400 tracking-widest">Our Services</p>
-          <div className="grid grid-cols-1 gap-2 pl-2">
+          <div className="grid grid-cols-1 gap-3 pl-2">
             {services.map(service => (
               <a 
                 key={service.id} 
                 href={`#service-${service.id}`}
-                className="text-foreground hover:text-primary font-medium"
+                className="text-base text-foreground hover:text-primary font-medium"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {service.title}
@@ -180,13 +176,6 @@ export function Header() {
               {link.label}
             </a>
           ))}
-          <a
-            href="#contact"
-            className="block w-full text-center rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            Get Free Quote
-          </a>
         </div>
       </div>
     </header>
