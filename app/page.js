@@ -11,6 +11,7 @@ import { Contact } from "../src/components/contact"
 import { Footer } from "../src/components/footer"
 import { ScrollProgress } from "../src/components/scroll-progress"
 import { MarqueeText } from "../src/components/marquee-text"
+import Partners from "../src/components/Partners"
 
 export default function Home() {
   return (
@@ -22,13 +23,15 @@ export default function Home() {
       <Services />
       <About />
       <Portfolio />
-      
+      {/* ADDED PARTNERS HERE */}
+      <Partners logos={partners} />
       {/* Replace <Reviews /> with <TestimonialsSection /> 
          to show the dynamic data from your database.
       */}
       <TestimonialsSection />
       
       <Contact />
+      
       <Footer />
     </main>
   )
