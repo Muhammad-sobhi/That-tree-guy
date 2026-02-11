@@ -1,13 +1,9 @@
 "use client"
-
 import React from 'react';
+import { getImageUrl } from "../../lib/api"; // Import your working helper
 
 export default function Partners({ logos }) {
-  // If no logos are passed from Home.js, don't show the section
   if (!logos || logos.length === 0) return null;
-
-  // This matches your getImageUrl logic
-  const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL?.replace('/api', '') || '';
 
   return (
     <section className="bg-white py-16 overflow-hidden border-y border-gray-50">
@@ -19,16 +15,20 @@ export default function Partners({ logos }) {
 
       <div className="relative flex overflow-x-hidden group">
         <div className="animate-marquee flex whitespace-nowrap items-center">
-          {/* We triple the list to make the infinite scroll smooth */}
-          {[...logos, ...logos, ...logos].map((logo, index) => (
-            <div key={index} className="mx-12 flex-shrink-0">
-              <img
-                src={logo.path?.startsWith('http') ? logo.path : `${BASE_URL}/storage/${logo.path}`}
-                alt={logo.name || "Partner"}
-                className="h-10 w-auto grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-500"
-              />
-            </div>
-          ))}
+          {[...logos, ...logos, ...logos].map((logo, index) => {
+            // Fix the backslashes from the database: partners\\image.jpg -> partners/image.jpg
+            const cleanPath = logo.path?.replace(/\\/g, '/');
+            
+            return (
+              <div key={index} className="mx-12 flex-shrink-0">
+                <img
+                  src={getImageUrl(cleanPath)}
+                  alt={logo.name || "Partner"}
+                  className="h-10 w-auto grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-500"
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
 
