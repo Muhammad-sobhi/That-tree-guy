@@ -2,158 +2,67 @@
 
 import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
-import { fetchData, getImageUrl } from "../../lib/api" // Adjust path if needed
+import { getImageUrl } from "../../lib/api"
 import { Award, Users, Leaf, Shield } from "lucide-react"
 
-const valueIcons = {
-  Excellence: Award,
-  Community: Users,
-  Sustainability: Leaf,
-  Trust: Shield,
-}
+const valueIcons = { Excellence: Award, Community: Users, Sustainability: Leaf, Trust: Shield }
 
-export default function About() {
+export default function About({ settings }) {
   const [isVisible, setIsVisible] = useState(false)
-  const [settings, setSettings] = useState(null)
   const [counters, setCounters] = useState({ years: 0, projects: 0, team: 0 })
   const sectionRef = useRef(null)
 
   useEffect(() => {
-    async function loadSettings() {
-      const data = await fetchData("/settings")
-      if (data) setSettings(data)
-    }
-    loadSettings()
-  }, [])
+    if (!settings || Object.keys(settings).length === 0) return;
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
+    const observer = new IntersectionObserver(([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true)
-          
           const targets = {
             years: parseInt(settings?.stat_years) || 15,
             projects: parseInt(settings?.stat_projects) || 500,
             team: parseInt(settings?.stat_team) || 25,
           }
-
-          const duration = 2000
-          const steps = 60
-          const interval = duration / steps
-          let step = 0
-          
+          let step = 0;
           const timer = setInterval(() => {
-            step++
-            const progress = step / steps
+            step++;
             setCounters({
-              years: Math.round(targets.years * progress),
-              projects: Math.round(targets.projects * progress),
-              team: Math.round(targets.team * progress),
+              years: Math.round(targets.years * (step / 50)),
+              projects: Math.round(targets.projects * (step / 50)),
+              team: Math.round(targets.team * (step / 50)),
             })
-            if (step >= steps) clearInterval(timer)
-          }, interval)
+            if (step >= 50) clearInterval(timer)
+          }, 30)
         }
-      },
-      { threshold: 0.3 }
-    )
-
+      }, { threshold: 0.1 })
     if (sectionRef.current) observer.observe(sectionRef.current)
     return () => observer.disconnect()
   }, [settings])
 
   return (
-    <section id="about" ref={sectionRef} className="relative py-24 lg:py-32 bg-background overflow-hidden">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none">
-        <span className="font-serif text-[20vw] font-bold text-primary/[0.03] whitespace-nowrap">ROOTS</span>
-      </div>
-
-      <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-start">
-          {/* Left Column: Image and Stats */}
-          <div className={`relative transition-all duration-1000 ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"}`}>
-            <div className="relative aspect-[4/5] overflow-hidden rounded-sm">
-              <Image
-                src={settings?.about_image_path ? getImageUrl(settings.about_image_path) : "/images/team.jpg"}
-                alt="Our professional team"
-                fill
-                unoptimized
-                sizes="(max-width: 768px) 100vw, 50vw"
-                className="object-cover"
-              />
-              <div className="absolute -bottom-8 -right-8 bg-primary text-primary-foreground p-8 rounded-sm shadow-2xl hidden md:block">
-                <div className="grid grid-cols-3 gap-6 text-center">
-                  <div>
-                    <div className="text-3xl font-serif font-bold">{counters.years}+</div>
-                    <div className="text-xs uppercase tracking-widest opacity-80">Years</div>
-                  </div>
-                  <div className="border-x border-primary-foreground/20 px-4">
-                    <div className="text-3xl font-serif font-bold">{counters.projects}+</div>
-                    <div className="text-xs uppercase tracking-widest opacity-80">Projects</div>
-                  </div>
-                  <div>
-                    <div className="text-3xl font-serif font-bold">{counters.team}+</div>
-                    <div className="text-xs uppercase tracking-widest opacity-80">Team</div>
-                  </div>
-                </div>
-              </div>
-            </div>
+    <section id="about" ref={sectionRef} className="py-24 bg-background relative overflow-hidden">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="grid lg:grid-cols-2 gap-16">
+          <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-gray-100">
+             <Image 
+                src={settings?.about_image_path ? getImageUrl(settings.about_image_path) : "/images/placeholder.jpg"} 
+                fill unoptimized className="object-cover" alt="About"
+             />
+             <div className="absolute bottom-4 right-4 bg-primary p-6 text-white rounded-xl shadow-xl">
+                <p className="text-2xl font-bold">{counters.years}+ Years</p>
+             </div>
           </div>
-
-          {/* Right Column: Content */}
-          <div className={`space-y-8 transition-all duration-1000 delay-200 ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"}`}>
-            <div>
-              <span className="text-sm font-medium uppercase tracking-widest text-primary">About Us</span>
-              <h2 className="mt-4 font-serif text-4xl md:text-5xl font-medium text-foreground leading-tight">
-                {settings?.about_title || "Deep Roots, Growing Legacy"}
-              </h2>
+          <div className="space-y-6">
+            <h2 className="text-4xl font-serif font-bold">{settings?.about_title || "Rooted in Excellence"}</h2>
+            <p className="text-muted-foreground whitespace-pre-line">{settings?.about_description || "Expert tree care services tailored for your landscape."}</p>
+            <div className="grid grid-cols-2 gap-4">
+               {Object.keys(valueIcons).map(v => (
+                 <div key={v} className="p-4 bg-gray-50 rounded-lg">
+                    <h4 className="font-bold">{v}</h4>
+                    <p className="text-xs text-gray-500">{settings?.[`value_${v.toLowerCase()}`] || "Committed to quality."}</p>
+                 </div>
+               ))}
             </div>
-
-            <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
-              {settings?.about_description || "Founded in 2010, That Tree Guy began as a passion project..."}
-            </p>
-
-            <div className="grid grid-cols-2 gap-6 pt-8">
-              {Object.keys(valueIcons).map((title) => {
-                const Icon = valueIcons[title]
-                const dbValue = settings?.[`value_${title.toLowerCase()}`]
-                return (
-                  <div key={title} className="flex items-start gap-4">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm bg-primary/10 text-primary">
-                      <Icon className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-foreground">{title}</h3>
-                      <p className="mt-1 text-sm text-muted-foreground">
-                        {dbValue || `Our commitment to ${title.toLowerCase()} in every project.`}
-                      </p>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-
-            {/* NEW EXTRA SECTION: Conditional Image and Text */}
-            {(settings?.about_extra_image_path || settings?.about_extra_text) && (
-              <div className="mt-12 pt-12 border-t border-primary/10 space-y-6">
-                {settings?.about_extra_image_path && (
-                  <div className="relative aspect-video overflow-hidden rounded-sm grayscale hover:grayscale-0 transition-all duration-500">
-                    <Image
-                      src={getImageUrl(settings.about_extra_image_path)}
-                      alt="Additional context"
-                      fill
-                      unoptimized
-                      className="object-cover"
-                    />
-                  </div>
-                )}
-                {settings?.about_extra_text && (
-                  <p className="text-sm text-muted-foreground leading-relaxed italic border-l-2 border-primary/20 pl-4">
-                    {settings.about_extra_text}
-                  </p>
-                )}
-              </div>
-            )}
           </div>
         </div>
       </div>

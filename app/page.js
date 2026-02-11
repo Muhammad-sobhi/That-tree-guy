@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from "react" // Added missing hooks
+import React, { useState, useEffect } from "react"
 import { Header } from "../src/components/header"
 import { Hero } from "../src/components/hero"
 import Services from "../src/components/services"
@@ -16,25 +16,26 @@ import { fetchData } from "../lib/api"
 
 export default function Home() {
   const [partners, setPartners] = useState([]);
-  const [settings, setSettings] = useState({}); // Added state for Footer links
+  const [settings, setSettings] = useState({});
 
   useEffect(() => {
     async function loadData() {
-      // Fetch Partners (Logos)
-      const partnersData = await fetchData('/partners');
-      if (partnersData) setPartners(partnersData);
-
-      // Fetch Settings (Social Media links for Footer)
-      const settingsData = await fetchData('/settings');
-      if (settingsData) {
-        // If settings come as an array from Laravel, flatten them into an object
-        if (Array.isArray(settingsData)) {
+      // Use the ONE route that we know is public in your api.php
+      const response = await fetchData('/public/landing-page');
+      
+      if (response) {
+        // Handle both Array and Object responses from Laravel
+        const rawSettings = response.settings || response;
+        if (Array.isArray(rawSettings)) {
           const flattened = {};
-          settingsData.forEach(item => { flattened[item.key] = item.value; });
+          rawSettings.forEach(item => { flattened[item.key] = item.value; });
           setSettings(flattened);
         } else {
-          setSettings(settingsData);
+          setSettings(rawSettings);
         }
+
+        // If your landing-page data includes logos, set them here
+        if (response.partners) setPartners(response.partners);
       }
     }
     loadData();
@@ -47,17 +48,12 @@ export default function Home() {
       <Hero />
       <MarqueeText />
       <Services />
-      <About />
+      {/* Pass settings as a prop so About doesn't have to fetch again */}
+      <About settings={settings} />
       <Portfolio />
-      
-      {/* Partners section now has the data */}
       <Partners logos={partners} />
-      
       <TestimonialsSection />
-      
       <Contact />
-      
-      {/* We pass the settings to the footer here */}
       <Footer settings={settings} />
     </main>
   )
