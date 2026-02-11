@@ -33,7 +33,6 @@ export default function Services() {
     async function loadServices() {
       try {
         const data = await fetchData("/services")
-        console.log("Setting state with:", data)
         if (data && Array.isArray(data)) {
           setServices(data)
         }
@@ -45,6 +44,25 @@ export default function Services() {
     }
     loadServices()
   }, [])
+
+  // NEW: Logic to handle "Fast Travel" hash changes
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash
+      if (hash && hash.startsWith("#service-")) {
+        const serviceId = parseInt(hash.split("-")[1])
+        const index = services.findIndex(s => s.id === serviceId)
+        if (index !== -1) {
+          setActiveService(index)
+        }
+      }
+    }
+
+    // Check on load and when hash changes
+    handleHashChange()
+    window.addEventListener("hashchange", handleHashChange)
+    return () => window.removeEventListener("hashchange", handleHashChange)
+  }, [services])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -63,10 +81,9 @@ export default function Services() {
     </div>
   )
 
-  // REMOVED THE "return null" - Now we show a message if empty
   if (services.length === 0) return (
     <div className="py-24 text-center border-y bg-muted/20">
-      <p className="text-muted-foreground">Services found in DB: 0. Check API connection.</p>
+      <p className="text-muted-foreground">No services found. Check your dashboard.</p>
     </div>
   )
 
@@ -82,13 +99,8 @@ export default function Services() {
           <div className="space-y-4">
             {services.map((service, index) => {
               const isActive = activeService === index
-              
-              // FIX FOR ICON: NULL
-              // Since your log shows 'icon: null', we MUST provide a fallback component
               const Icon = iconMap[service.icon] || TreeDeciduous
 
-              // FIX FOR TAGS: STRING
-              // Your log shows tags: '["man ","cut","tree"]' (A string, not an array)
               let parsedTags = []
               try {
                 if (typeof service.tags === 'string') {
@@ -103,7 +115,9 @@ export default function Services() {
               return (
                 <div
                   key={service.id || index}
-                  className={`group cursor-pointer rounded-sm border p-5 transition-all duration-500 ${
+                  /* ADDED ID AND SCROLL MARGIN FOR FAST TRAVEL */
+                  id={`service-${service.id}`}
+                  className={`group cursor-pointer rounded-sm border p-5 transition-all duration-500 scroll-mt-32 ${
                     isActive ? "border-primary bg-background shadow-lg" : "border-border bg-transparent"
                   }`}
                   onClick={() => setActiveService(index)}
@@ -132,28 +146,26 @@ export default function Services() {
             })}
           </div>
 
-        {/* 1. Increased height from 500px to 700px and added a desktop min-height */}
-<div className="relative h-[700px] lg:min-h-[800px]"> 
-    {/* 2. Changed h-full to a viewport-based height so it fills the screen while scrolling */}
-    <div className="sticky top-32 h-[600px] lg:h-[750px] w-full">
-       <div className="relative h-full w-full overflow-hidden rounded-sm bg-muted">
-        {services.map((service, index) => (
-          <Image
-            key={service.id || index}
-            src={getImageUrl(service.image_path)}
-            alt={service.title}
-            fill
-            unoptimized
-            className={`object-cover transition-opacity duration-700 ${activeService === index ? "opacity-100" : "opacity-0"}`}
-          />
-        ))}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-        <div className="absolute bottom-10 left-10"> {/* 3. Increased spacing for larger image */}
-           <p className="text-white font-serif text-4xl">{services[activeService]?.title}</p> {/* 4. Made text bigger to match image */}
-        </div>
-      </div>
-    </div>
-  </div>
+          <div className="relative h-[700px] lg:min-h-[800px]"> 
+            <div className="sticky top-32 h-[600px] lg:h-[750px] w-full">
+              <div className="relative h-full w-full overflow-hidden rounded-sm bg-muted">
+                {services.map((service, index) => (
+                  <Image
+                    key={service.id || index}
+                    src={getImageUrl(service.image_path)}
+                    alt={service.title}
+                    fill
+                    unoptimized
+                    className={`object-cover transition-opacity duration-700 ${activeService === index ? "opacity-100" : "opacity-0"}`}
+                  />
+                ))}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                <div className="absolute bottom-10 left-10">
+                   <p className="text-white font-serif text-4xl">{services[activeService]?.title}</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

@@ -3,8 +3,7 @@
 import { useState, useEffect } from "react"
 import { Menu, X, ChevronDown } from "lucide-react"
 import Image from "next/image"
-// Import your existing fetchData helper
-import { fetchData } from "@/lib/api" // Adjust this path if your api.js is in /src/api or elsewhere
+import { fetchData } from "@/lib/api"
 
 const navLinks = [
   { href: "#about", label: "About" },
@@ -19,10 +18,8 @@ export function Header() {
   const [services, setServices] = useState([])
   const [dropdownOpen, setDropdownOpen] = useState(false)
 
-  // Fetch services using your existing helper
   useEffect(() => {
     const getServices = async () => {
-      // your helper already adds /api, so we just pass the endpoint
       const data = await fetchData('/services'); 
       if (data) {
         setServices(data);
@@ -88,7 +85,6 @@ export function Header() {
               Services <ChevronDown size={14} className={`transition-transform duration-300 ${dropdownOpen ? 'rotate-180' : ''}`} />
             </button>
 
-            {/* Dropdown Menu - Matches your clean UI */}
             <div className={`absolute left-0 top-full pt-2 transition-all duration-300 ${
               dropdownOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-2 pointer-events-none"
             }`}>
