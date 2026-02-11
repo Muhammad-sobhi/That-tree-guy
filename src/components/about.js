@@ -32,7 +32,6 @@ export default function About() {
         if (entry.isIntersecting) {
           setIsVisible(true)
           
-          // Use DB values if they exist, otherwise use your hardcoded defaults
           const targets = {
             years: parseInt(settings?.stat_years) || 15,
             projects: parseInt(settings?.stat_projects) || 500,
@@ -70,11 +69,13 @@ export default function About() {
       </div>
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+        <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-start">
+          {/* Left Column: Image and Stats */}
           <div className={`relative transition-all duration-1000 ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"}`}>
             <div className="relative aspect-[4/5] overflow-hidden rounded-sm">
               <Image
-                src={settings?.about_image_path ? getImageUrl(settings.about_image_path) : "/images/team.jpg"}                alt="Our professional team"
+                src={settings?.about_image_path ? getImageUrl(settings.about_image_path) : "/images/team.jpg"}
+                alt="Our professional team"
                 fill
                 unoptimized
                 sizes="(max-width: 768px) 100vw, 50vw"
@@ -99,6 +100,7 @@ export default function About() {
             </div>
           </div>
 
+          {/* Right Column: Content */}
           <div className={`space-y-8 transition-all duration-1000 delay-200 ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"}`}>
             <div>
               <span className="text-sm font-medium uppercase tracking-widest text-primary">About Us</span>
@@ -107,12 +109,12 @@ export default function About() {
               </h2>
             </div>
 
-            <p className="text-muted-foreground leading-relaxed">
-              {settings?.about_description || "Founded in 2010, That Tree Guy began as a passion project by a single arborist..."}
+            <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
+              {settings?.about_description || "Founded in 2010, That Tree Guy began as a passion project..."}
             </p>
 
             <div className="grid grid-cols-2 gap-6 pt-8">
-              {Object.keys(valueIcons).map((title, index) => {
+              {Object.keys(valueIcons).map((title) => {
                 const Icon = valueIcons[title]
                 const dbValue = settings?.[`value_${title.toLowerCase()}`]
                 return (
@@ -130,6 +132,28 @@ export default function About() {
                 )
               })}
             </div>
+
+            {/* NEW EXTRA SECTION: Conditional Image and Text */}
+            {(settings?.about_extra_image_path || settings?.about_extra_text) && (
+              <div className="mt-12 pt-12 border-t border-primary/10 space-y-6">
+                {settings?.about_extra_image_path && (
+                  <div className="relative aspect-video overflow-hidden rounded-sm grayscale hover:grayscale-0 transition-all duration-500">
+                    <Image
+                      src={getImageUrl(settings.about_extra_image_path)}
+                      alt="Additional context"
+                      fill
+                      unoptimized
+                      className="object-cover"
+                    />
+                  </div>
+                )}
+                {settings?.about_extra_text && (
+                  <p className="text-sm text-muted-foreground leading-relaxed italic border-l-2 border-primary/20 pl-4">
+                    {settings.about_extra_text}
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
