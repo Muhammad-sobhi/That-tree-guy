@@ -1,10 +1,12 @@
 "use client"
+
 import React from 'react';
 
 export default function Partners({ logos }) {
-  // If logos is empty, the section won't show at all
+  // If no logos are passed from Home.js, don't show the section
   if (!logos || logos.length === 0) return null;
 
+  // This matches your getImageUrl logic
   const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL?.replace('/api', '') || '';
 
   return (
@@ -17,7 +19,7 @@ export default function Partners({ logos }) {
 
       <div className="relative flex overflow-x-hidden group">
         <div className="animate-marquee flex whitespace-nowrap items-center">
-          {/* We use logo.path because that is what your ContentManager saves */}
+          {/* We triple the list to make the infinite scroll smooth */}
           {[...logos, ...logos, ...logos].map((logo, index) => (
             <div key={index} className="mx-12 flex-shrink-0">
               <img
