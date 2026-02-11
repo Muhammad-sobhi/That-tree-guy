@@ -20,11 +20,11 @@ export default function Home() {
 
   useEffect(() => {
     async function loadData() {
-      // Use the ONE route that we know is public in your api.php
+      // This is the correct public route from your api.php
       const response = await fetchData('/public/landing-page');
       
       if (response) {
-        // Handle both Array and Object responses from Laravel
+        // 1. EXTRACT SETTINGS
         const rawSettings = response.settings || response;
         if (Array.isArray(rawSettings)) {
           const flattened = {};
@@ -34,8 +34,10 @@ export default function Home() {
           setSettings(rawSettings);
         }
 
-        // If your landing-page data includes logos, set them here
-        if (response.partners) setPartners(response.partners);
+        // 2. EXTRACT PARTNERS (The Fix)
+        // Check every possible key Laravel might be using for your partners/logos
+        const partnerData = response.partners || response.logos || [];
+        setPartners(partnerData);
       }
     }
     loadData();
@@ -48,10 +50,13 @@ export default function Home() {
       <Hero />
       <MarqueeText />
       <Services />
-      {/* Pass settings as a prop so About doesn't have to fetch again */}
+      {/* Ensure About receives the settings prop */}
       <About settings={settings} />
       <Portfolio />
+      
+      {/* This will now receive the array, making the section visible */}
       <Partners logos={partners} />
+      
       <TestimonialsSection />
       <Contact />
       <Footer settings={settings} />
