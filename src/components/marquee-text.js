@@ -2,14 +2,12 @@
 
 export function MarqueeText() {
   const items = [
-    "Tree Removal",
-    "Garden Design",
-    "Landscape Architecture",
     "Hedge Trimming",
-    "Stump Grinding",
-    "Seasonal Maintenance",
-    "Irrigation Systems",
-    "Outdoor Lighting",
+    "Tree Care",
+    "Tree Prune",
+    "Tree Planting",
+    "Emergency Service 24/7",
+    "Stump Grinding"
   ]
 
   return (

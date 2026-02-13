@@ -137,8 +137,7 @@ export default function About({ settings }) {
             {(settings?.about_extra_image_path || settings?.about_extra_text) && (
               <div className="mt-12 pt-12 border-t border-primary/10 space-y-6">
                 {settings?.about_extra_image_path && (
-                  <div className="relative aspect-video overflow-hidden rounded-sm grayscale hover:grayscale-0 transition-all duration-500">
-                    <Image
+                  <div className="relative aspect-video overflow-hidden rounded-sm transition-all duration-500">                    <Image
                       src={getImageUrl(settings.about_extra_image_path)}
                       alt="Additional info"
                       fill
