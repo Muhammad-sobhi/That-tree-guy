@@ -1,0 +1,7 @@
+services:
+  landing:
+    build: .
+    container_name: landscaping-landing
+    restart: always
+    ports:
+      - "80:3000" # This maps the public Port 80 to the internal Next.js Port 3000
