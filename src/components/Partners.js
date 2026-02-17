@@ -16,16 +16,22 @@ export default function Partners({ logos }) {
       <div className="relative flex overflow-x-hidden group">
         <div className="animate-marquee flex whitespace-nowrap items-center">
           {[...logos, ...logos, ...logos].map((logo, index) => {
-            // Fix the backslashes from the database: partners\\image.jpg -> partners/image.jpg
             const cleanPath = logo.path?.replace(/\\/g, '/');
             
             return (
               <div key={index} className="mx-12 flex-shrink-0">
-                <img
-                  src={getImageUrl(cleanPath)}
-                  alt={logo.name || "Partner"}
-                  className="h-10 w-auto grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-500"
-                />
+                <a 
+                  href={logo.url && logo.url !== '#' ? logo.url : undefined} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className={logo.url && logo.url !== '#' ? "cursor-pointer" : "cursor-default"}
+                >
+                  <img
+                    src={getImageUrl(cleanPath)}
+                    alt={logo.name || "Partner"}
+                    className="h-10 w-auto grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-500"
+                  />
+                </a>
               </div>
             );
           })}
