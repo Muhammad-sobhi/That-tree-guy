@@ -96,10 +96,10 @@ export function Contact() {
           {/* LEFT INFO (UNCHANGED DESIGN) */}
           <div className={`lg:col-span-2 space-y-8 transition-all duration-700 delay-200 ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"}`}>
             {[
-              { icon: MapPin, title: "Visit Us", details: ["Cairo, Egypt"] },
-              { icon: Phone, title: "Call Us", details: ["+20 XXX XXX XXXX"] },
-              { icon: Mail, title: "Email Us", details: ["info@yourcompany.com"] },
-              { icon: Clock, title: "Hours", details: ["Sun-Thu: 8am - 6pm"] },
+              { icon: MapPin, title: "Visit Us", details: ["66 Minnewawa Rd, Mississauga, ON L5G 1C7"] },
+              { icon: Phone, title: "Call Us", details: ["+1647-712-2074"] },
+              { icon: Mail, title: "Email Us", details: ["Muha@Thattreeguyts.com"] },
+              { icon: Clock, title: "Hours", details: ["Mon-Sat: 8am - 9pm"] },
             ].map((item) => {
               const Icon = item.icon
               return (

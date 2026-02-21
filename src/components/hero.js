@@ -50,7 +50,7 @@ export function Hero() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-secondary"></span>
             </span>
-            <span className="font-medium tracking-wide">Serving Canada Since 2010</span>
+            <span className="font-medium tracking-wide">Serving Canada Since 2023</span>
           </div>
 
           {/* Main Typography Block */}
